@@ -4,6 +4,7 @@ const Data = require('../data/db.js');
 
 const router = express.Router();
 
+/* POST */
 router.post('/', (req, res) => {
   const { title, contents } = req.body;
   if (!title || !contents) {
@@ -40,6 +41,46 @@ router.post('/:id/comments', (req, res) => {
       }else {
         res.status(404).json({ message: "The post with the specified ID does not exist." });
       } 
+    })
+    .catch(() => {
+      res.status(500).json({ error: "The comments information could not be retrieved." });
+    });
+});
+
+/* GET */
+
+router.get('/', (req, res) => {
+  Data.find()
+    .then(posts => {
+      res.status(200).json(posts);
+    })
+    .catch(() => {
+      res.status(500).json({ error: "The posts information could not be retrieved." });
+    });
+});
+
+router.get('/:id', (req, res) => {
+  Data.findById(req.params.id)
+    .then(post => {
+      if (post.length > 0) {
+        res.status(200).json(post);
+      } else {
+        res.status(404).json({ message: "The post with the specified ID does not exist." });
+      }
+    })
+    .catch(() => {
+      res.status(500).json({ error: "The post information could not be retrieved." });
+    });
+});
+
+router.get('/:id/comments', (req, res) => {
+  Data.findPostComments(req.params.id)
+    .then(comments => {
+      if (comments.length > 0) {
+        res.status(200).json(comments);
+      } else {
+        res.status(404).json({ message: "The post with the specified ID does not exist." });
+      }
     })
     .catch(() => {
       res.status(500).json({ error: "The comments information could not be retrieved." });
