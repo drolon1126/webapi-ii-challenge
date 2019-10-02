@@ -13,9 +13,9 @@ router.post('/', (req, res) => {
     Data.insert(req.body)
       .then((post) => {
         Data.findById(post.id)
-        .then(p=>{
-          res.status(201).json(p);
-        })
+          .then(p => {
+            res.status(201).json(p);
+          })
       })
       .catch(() => {
         res.status(500).json({ errorMessage: 'There was an error while saving the post to the database.' })
@@ -36,9 +36,9 @@ router.post('/:id/comments', (req, res) => {
           Data.insertComment(comTmp)
             .then(comment => {
               Data.findCommentById(comment.id)
-              .then(com=>{
-                res.status(201).json(com);
-              })
+                .then(com => {
+                  res.status(201).json(com);
+                })
             })
             .catch(() => {
               res.status(500).json({ error: "There was an error while saving the comment to the database." });
@@ -80,17 +80,28 @@ router.get('/:id', (req, res) => {
 });
 
 router.get('/:id/comments', (req, res) => {
-  Data.findPostComments(req.params.id)
-    .then(comments => {
-      if (comments.length > 0) {
-        res.status(200).json(comments);
+  Data.findById(req.params.id)
+    .then(post => {
+      if (post.length > 0) {
+        Data.findPostComments(req.params.id)
+          .then(comments => {
+            if (comments.length > 0) {
+              res.status(200).json(comments);
+            } else {
+              res.status(404).json({ message: "The post has no comments." });
+            }
+          })
+          .catch(() => {
+            res.status(500).json({ error: "The comments information could not be retrieved." });
+          });
       } else {
         res.status(404).json({ message: "The post with the specified ID does not exist." });
       }
     })
     .catch(() => {
-      res.status(500).json({ error: "The comments information could not be retrieved." });
+      res.status(500).json({ error: "The post information could not be retrieved." });
     });
+
 });
 
 /* DELETE */
@@ -124,9 +135,9 @@ router.put('/:id', (req, res) => {
       .then(post => {
         if (post) {
           Data.findById(req.params.id)
-          .then(p=>{
-            res.status(200).json(p);
-          })
+            .then(p => {
+              res.status(200).json(p);
+            })
         } else {
           res.status(404).json({ message: "The post with the specified ID does not exist." });
         }
