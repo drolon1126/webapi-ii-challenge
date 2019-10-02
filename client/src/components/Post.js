@@ -12,16 +12,16 @@ const Post = props => {
   },[]);
 
   return(
-    <div>
-      <div>
-        <h2>{props.post.title}</h2>
-        <p>{props.post.contents}</p>
+    <div class='post'>
+      <div class='postMain'>
+        <h2 class='postTitle'>{props.post.title}</h2>
+        <p class='postContents'>{props.post.contents}</p>
       </div>
-      <div>
+      <div class='postComments'>
         <h3>Comments:</h3>
         {comments.map(comment=>{
           return(
-            <p>{comment.text}</p>
+            <p class='comment'>{comment.text}</p>
           );
         })}
       </div>
